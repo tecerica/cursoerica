@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Curso Técnico em Enfermagem</title>
   <style>
     /* Imagem de fundo desfocada */
@@ -27,7 +28,7 @@
     body {
       font-family: Arial, sans-serif;
       color: #000;
-      margin: 30px;
+      margin: 15px 10px;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
@@ -37,6 +38,7 @@
       padding: 10px 15px;
       border-radius: 5px;
       margin-bottom: 15px;
+      font-size: 1.2rem;
     }
 
     table {
@@ -47,13 +49,15 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.1);
       border-radius: 6px;
       overflow: hidden;
+      font-size: 0.9rem;
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 10px 8px;
       border-bottom: 1px solid #ddd;
       text-align: left;
       vertical-align: middle;
+      word-break: break-word;
     }
 
     th {
@@ -78,6 +82,7 @@
     .media, .status {
       text-align: center;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .status.aprovado {
@@ -92,12 +97,13 @@
       background-color: #006699;
       color: white;
       border: none;
-      padding: 6px 12px;
-      margin: 0 5px;
-      border-radius: 5px;
+      padding: 10px 18px;
+      margin: 5px 3px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 1rem;
       transition: background-color 0.3s ease;
+      min-width: 100px;
     }
 
     button:hover {
@@ -106,6 +112,10 @@
 
     .button-group {
       margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
 
     /* Modo Noturno */
@@ -136,6 +146,59 @@
     .acao-btn {
       text-align: center;
       min-width: 80px;
+    }
+
+    /* RESPONSIVO PARA CELULAR */
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead tr {
+        display: none; /* esconde cabeçalho da tabela para layout móvel */
+      }
+
+      tr {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 0 8px rgba(0,0,0,0.05);
+        padding: 10px;
+      }
+
+      td {
+        border: none;
+        padding: 6px 10px;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+      }
+
+      td:before {
+        position: absolute;
+        top: 6px;
+        left: 10px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #555;
+        content: attr(data-label);
+      }
+
+      .media, .status {
+        text-align: left;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      button {
+        width: 100%;
+        min-width: unset;
+      }
     }
   </style>
 </head>
@@ -207,7 +270,7 @@
     }
   }
 
-  function criarBotaoApagar(row, tabela) {
+  function criarBotaoApagar(row) {
     const cell = row.insertCell(-1); // última célula
     cell.className = "acao-btn";
 
@@ -243,9 +306,12 @@
           cell.oninput = salvarTudo;
         }
       }
+      // Adiciona data-label para celular
+      const headers = ["Disciplina", "Professor(a)", "Nota 1", "Nota 2", "Média Final", "Faltas", "Status", "Observações"];
+      cell.setAttribute('data-label', headers[i]);
     }
     atualizarLinhaNotas(row);
-    criarBotaoApagar(row, "tabelaNotas");
+    criarBotaoApagar(row);
     salvarTudo();
   }
 
@@ -257,8 +323,11 @@
       cell.contentEditable = "true";
       if(conteudo[i]) cell.innerText = conteudo[i];
       cell.oninput = salvarTudo;
+      // data-label para celular
+      const headers = ["Matéria", "Data Planejada", "Atividade", "Observações"];
+      cell.setAttribute('data-label', headers[i]);
     }
-    criarBotaoApagar(row, "tabelaOrganizacao");
+    criarBotaoApagar(row);
     salvarTudo();
   }
 
