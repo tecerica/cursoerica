@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Curso Técnico em Enfermagem</title>
+  <style>
+    /* Imagem de fundo desfocada */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://d335luupugsy2.cloudfront.net/images/landing_page/1623590/AdobeStock_283306159_fundo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
+      filter: blur(8px);
+      opacity: 0.6;
+    }
+
+    body.dark::before {
+      filter: blur(8px) brightness(0.5);
+      opacity: 0.5;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: #000;
+      margin: 30px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h2 {
+      background-color: #006699;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background-color: rgba(255,255,255,0.92);
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    td[contenteditable] {
+      background-color: #fafafa;
+      cursor: text;
+      min-height: 30px;
+      border-radius: 4px;
+      outline: none;
+      transition: background-color 0.2s ease;
+    }
+
+    td[contenteditable]:focus {
+      background-color: #e8f0fe;
+      box-shadow: 0 0 5px #4285f4;
+    }
+
+    .media, .status {
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .status.aprovado {
+      color: green;
+    }
+
+    .status.reprovado {
+      color: red;
+    }
+
+    button {
+      background-color: #006699;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin: 5px 5px 20px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004d66;
+    }
+
+    .button-group {
+      margin-bottom: 30px;
+    }
+
+    /* Modo Noturno */
+    body.dark {
+      color: #e0e0e0;
+    }
+
+    body.dark table {
+      background-color: rgba(30,30,30,0.9);
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    body.dark th {
+      background-color: #333;
+      color: #ddd;
+    }
+
+    body.dark td[contenteditable] {
+      background-color: #2a2a2a;
+      color: #ccc;
+    }
+
+    body.dark td[contenteditable]:focus {
+      background-color: #3a3a3a;
+      box-shadow: 0 0 8px #7193f4;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📘 Disciplinas e Notas</h2>
+<table id="tabelaNotas">
+  <thead>
+    <tr>
+      <th>Disciplina</th>
+      <th>Professor(a)</th>
+      <th>Nota 1</th>
+      <th>Nota 2</th>
+      <th>Média Final</th>
+      <th>Faltas</th>
+      <th>Status</th>
+      <th>Observações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<div class="button-group">
+  <button onclick="adicionarDisciplina()">Adicionar Disciplina</button>
+</div>
+
+<h2>📅 Organização da Próxima Matéria</h2>
+<table id="tabelaOrganizacao">
+  <thead>
+    <tr>
+      <th>Matéria</th>
+      <th>Data Planejada</th>
+      <th>Atividade</th>
+      <th>Observações</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<div class="button-group">
+  <button onclick="adicionarOrganizacao()">Adicionar Organização</button>
+</div>
+
+<div class="button-group">
+  <button onclick="alternarModoNoturno()">🌙 Alternar Modo Noturno</button>
+  <button onclick="limparTudo()">🧹 Limpar Tudo</button>
+  <button onclick="exportarPDF()">📄 Exportar tudo para PDF</button>
+</div>
+
+<!-- jsPDF via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  function atualizarLinhaNotas(row) {
+    const nota1 = parseFloat(row.cells[2].innerText.replace(',', '.')) || 0;
+    const nota2 = parseFloat(row.cells[3].innerText.replace(',', '.')) || 0;
+    const media = ((nota1 + nota2) / 2).toFixed(2);
+    row.cells[4].innerText = media.replace('.', ',');
+
+    const statusCell = row.cells[6];
+    if(media >= 6) {
+      statusCell.innerText = "Aprovado";
+      statusCell.classList.add("aprovado");
+      statusCell.classList.remove("reprovado");
+    } else {
+      statusCell.innerText = "Reprovado";
+      statusCell.classList.add("reprovado");
+      statusCell.classList.remove("aprovado");
+    }
+  }
+
+  function adicionarDisciplina(conteudo = []) {
+    const tbody = document.querySelector("#tabelaNotas tbody");
+    const row = tbody.insertRow();
+    for(let i=0; i<8; i++) {
+      const cell = row.insertCell();
+      if(i === 4 || i === 6) {
+        if(i === 4) cell.className = "media";
+        if(i === 6) cell.className = "status";
+        cell.innerText = "";
+      } else {
+        cell.contentEditable = "true";
+        if(conteudo[i]) cell.innerText = conteudo[i];
+        if(i === 2 || i === 3) {
+          cell.oninput = () => {
+            atualizarLinhaNotas(row);
+            salvarTudo();
+          };
+        } else {
+          cell.oninput = salvarTudo;
+        }
+      }
+    }
+    atualizarLinhaNotas(row);
+    salvarTudo();
+  }
+
+  function adicionarOrganizacao(conteudo = []) {
+    const tbody = document.querySelector("#tabelaOrganizacao tbody");
+    const row = tbody.insertRow();
+    for(let i=0; i<4; i++) {
+      const cell = row.insertCell();
+      cell.contentEditable = "true";
+      if(conteudo[i]) cell.innerText = conteudo[i];
+      cell.oninput = salvarTudo;
+    }
+    salvarTudo();
+  }
+
+  function salvarTudo() {
+    function salvarTabela(id) {
+      const tbody = document.querySelector(`#${id} tbody`);
+      const linhas = Array.from(tbody.rows);
+      return linhas.map(row => Array.from(row.cells).map(cell => cell.innerText));
+    }
+    const dados = {
+      notas: salvarTabela("tabelaNotas"),
+      organizacao: salvarTabela("tabelaOrganizacao"),
+      modo: document.body.classList.contains("dark") ? "dark" : "light"
+    };
+    localStorage.setItem("cursoEnfermagem", JSON.stringify(dados));
+  }
+
+  function carregarTudo() {
+    const dados = JSON.parse(localStorage.getItem("cursoEnfermagem"));
+    if(!dados) return;
+
+    dados.notas.forEach(linha => adicionarDisciplina(linha));
+    dados.organizacao.forEach(linha => adicionarOrganizacao(linha));
+
+    if(dados.modo === "dark") document.body.classList.add("dark");
+  }
+
+  function limparTudo() {
+    if(confirm("Deseja realmente apagar todas as informações salvas?")) {
+      localStorage.removeItem("cursoEnfermagem");
+      location.reload();
+    }
+  }
+
+  function alternarModoNoturno() {
+    document.body.classList.toggle("dark");
+    salvarTudo();
+  }
+
+  async function exportarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    if(!jsPDF.API.autoTable) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js";
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    let y = 20;
+    const margemEsq = 15;
+
+    function adicionarTabelaPDF(titulo, id) {
+      doc.setFontSize(14);
+      doc.text(titulo, margemEsq, y);
+      y += 10;
+
+      const tabela = document.getElementById(id);
+      const headers = Array.from(tabela.tHead.rows[0].cells).map(cell => cell.innerText);
+      const data = Array.from(tabela.tBodies[0].rows).map(row =>
+        Array.from(row.cells).map(cell => cell.innerText)
+      );
+
+      doc.autoTable({
+        startY: y,
+        head: [headers],
+        body: data,
+        margin: { left: margemEsq, right: 15 },
+        styles: { fontSize: 9, cellPadding: 2, minCellHeight: 8 },
+        theme: 'striped',
+        didDrawPage: (data) => {
+          y = data.cursor.y + 10;
+        }
+      });
+    }
+
+    adicionarTabelaPDF("📘 Disciplinas e Notas", "tabelaNotas");
+    adicionarTabelaPDF("📅 Organização da Próxima Matéria", "tabelaOrganizacao");
+
+    doc.save("CursoTecnicoEnfermagem.pdf");
+  }
+
+  carregarTudo();
+</script>
+
+</body>
+</html>
