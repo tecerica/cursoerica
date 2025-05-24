@@ -92,11 +92,11 @@
       background-color: #006699;
       color: white;
       border: none;
-      padding: 10px 18px;
-      margin: 5px 5px 20px 0;
+      padding: 6px 12px;
+      margin: 0 5px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
       transition: background-color 0.3s ease;
     }
 
@@ -132,6 +132,11 @@
       background-color: #3a3a3a;
       box-shadow: 0 0 8px #7193f4;
     }
+
+    .acao-btn {
+      text-align: center;
+      min-width: 80px;
+    }
   </style>
 </head>
 <body>
@@ -148,6 +153,7 @@
       <th>Faltas</th>
       <th>Status</th>
       <th>Observações</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -164,6 +170,7 @@
       <th>Data Planejada</th>
       <th>Atividade</th>
       <th>Observações</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -200,6 +207,21 @@
     }
   }
 
+  function criarBotaoApagar(row, tabela) {
+    const cell = row.insertCell(-1); // última célula
+    cell.className = "acao-btn";
+
+    const btn = document.createElement("button");
+    btn.textContent = "Apagar";
+    btn.onclick = () => {
+      if(confirm("Deseja realmente apagar esta linha?")) {
+        row.remove();
+        salvarTudo();
+      }
+    };
+    cell.appendChild(btn);
+  }
+
   function adicionarDisciplina(conteudo = []) {
     const tbody = document.querySelector("#tabelaNotas tbody");
     const row = tbody.insertRow();
@@ -223,6 +245,7 @@
       }
     }
     atualizarLinhaNotas(row);
+    criarBotaoApagar(row, "tabelaNotas");
     salvarTudo();
   }
 
@@ -235,6 +258,7 @@
       if(conteudo[i]) cell.innerText = conteudo[i];
       cell.oninput = salvarTudo;
     }
+    criarBotaoApagar(row, "tabelaOrganizacao");
     salvarTudo();
   }
 
@@ -242,7 +266,13 @@
     function salvarTabela(id) {
       const tbody = document.querySelector(`#${id} tbody`);
       const linhas = Array.from(tbody.rows);
-      return linhas.map(row => Array.from(row.cells).map(cell => cell.innerText));
+      return linhas.map(row => {
+        // ignorar última célula (botão apagar)
+        const celulasTexto = Array.from(row.cells)
+          .slice(0, -1)
+          .map(cell => cell.innerText);
+        return celulasTexto;
+      });
     }
     const dados = {
       notas: salvarTabela("tabelaNotas"),
@@ -297,9 +327,13 @@
       y += 10;
 
       const tabela = document.getElementById(id);
-      const headers = Array.from(tabela.tHead.rows[0].cells).map(cell => cell.innerText);
+      const headers = Array.from(tabela.tHead.rows[0].cells)
+        .slice(0, -1) // Ignorar coluna "Ações"
+        .map(cell => cell.innerText);
       const data = Array.from(tabela.tBodies[0].rows).map(row =>
-        Array.from(row.cells).map(cell => cell.innerText)
+        Array.from(row.cells)
+          .slice(0, -1) // Ignorar coluna "Ações"
+          .map(cell => cell.innerText)
       );
 
       doc.autoTable({
