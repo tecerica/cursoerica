@@ -2,10 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Curso Técnico em Enfermagem</title>
   <style>
-    /* Imagem de fundo desfocada */
     body::before {
       content: "";
       position: fixed;
@@ -27,8 +26,9 @@
 
     body {
       font-family: Arial, sans-serif;
+      font-size: 14px;
       color: #000;
-      margin: 15px 10px;
+      margin: 20px;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
@@ -38,7 +38,7 @@
       padding: 10px 15px;
       border-radius: 5px;
       margin-bottom: 15px;
-      font-size: 1.2rem;
+      font-size: 16px;
     }
 
     table {
@@ -49,15 +49,14 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.1);
       border-radius: 6px;
       overflow: hidden;
-      font-size: 0.9rem;
     }
 
     th, td {
-      padding: 10px 8px;
+      font-size: 14px;
+      padding: 12px 15px;
       border-bottom: 1px solid #ddd;
       text-align: left;
       vertical-align: middle;
-      word-break: break-word;
     }
 
     th {
@@ -82,7 +81,6 @@
     .media, .status {
       text-align: center;
       font-weight: 600;
-      white-space: nowrap;
     }
 
     .status.aprovado {
@@ -97,13 +95,12 @@
       background-color: #006699;
       color: white;
       border: none;
-      padding: 10px 18px;
-      margin: 5px 3px;
-      border-radius: 8px;
+      padding: 8px 14px;
+      margin: 6px 4px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 14px;
       transition: background-color 0.3s ease;
-      min-width: 100px;
     }
 
     button:hover {
@@ -111,14 +108,12 @@
     }
 
     .button-group {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
       justify-content: center;
     }
 
-    /* Modo Noturno */
     body.dark {
       color: #e0e0e0;
     }
@@ -146,59 +141,6 @@
     .acao-btn {
       text-align: center;
       min-width: 80px;
-    }
-
-    /* RESPONSIVO PARA CELULAR */
-    @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      thead tr {
-        display: none; /* esconde cabeçalho da tabela para layout móvel */
-      }
-
-      tr {
-        margin-bottom: 15px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 0 8px rgba(0,0,0,0.05);
-        padding: 10px;
-      }
-
-      td {
-        border: none;
-        padding: 6px 10px;
-        position: relative;
-        padding-left: 50%;
-        text-align: left;
-      }
-
-      td:before {
-        position: absolute;
-        top: 6px;
-        left: 10px;
-        width: 45%;
-        white-space: nowrap;
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: #555;
-        content: attr(data-label);
-      }
-
-      .media, .status {
-        text-align: left;
-      }
-
-      .button-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      button {
-        width: 100%;
-        min-width: unset;
-      }
     }
   </style>
 </head>
@@ -243,12 +185,12 @@
 </div>
 
 <div class="button-group">
+  <button onclick="salvarTudo()">💾 Salvar Dados</button>
   <button onclick="alternarModoNoturno()">🌙 Alternar Modo Noturno</button>
   <button onclick="limparTudo()">🧹 Limpar Tudo</button>
   <button onclick="exportarPDF()">📄 Exportar tudo para PDF</button>
 </div>
 
-<!-- jsPDF via CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
@@ -271,7 +213,7 @@
   }
 
   function criarBotaoApagar(row) {
-    const cell = row.insertCell(-1); // última célula
+    const cell = row.insertCell(-1);
     cell.className = "acao-btn";
 
     const btn = document.createElement("button");
@@ -306,9 +248,6 @@
           cell.oninput = salvarTudo;
         }
       }
-      // Adiciona data-label para celular
-      const headers = ["Disciplina", "Professor(a)", "Nota 1", "Nota 2", "Média Final", "Faltas", "Status", "Observações"];
-      cell.setAttribute('data-label', headers[i]);
     }
     atualizarLinhaNotas(row);
     criarBotaoApagar(row);
@@ -323,9 +262,6 @@
       cell.contentEditable = "true";
       if(conteudo[i]) cell.innerText = conteudo[i];
       cell.oninput = salvarTudo;
-      // data-label para celular
-      const headers = ["Matéria", "Data Planejada", "Atividade", "Observações"];
-      cell.setAttribute('data-label', headers[i]);
     }
     criarBotaoApagar(row);
     salvarTudo();
@@ -336,10 +272,7 @@
       const tbody = document.querySelector(`#${id} tbody`);
       const linhas = Array.from(tbody.rows);
       return linhas.map(row => {
-        // ignorar última célula (botão apagar)
-        const celulasTexto = Array.from(row.cells)
-          .slice(0, -1)
-          .map(cell => cell.innerText);
+        const celulasTexto = Array.from(row.cells).slice(0, -1).map(cell => cell.innerText);
         return celulasTexto;
       });
     }
@@ -354,10 +287,8 @@
   function carregarTudo() {
     const dados = JSON.parse(localStorage.getItem("cursoEnfermagem"));
     if(!dados) return;
-
     dados.notas.forEach(linha => adicionarDisciplina(linha));
     dados.organizacao.forEach(linha => adicionarOrganizacao(linha));
-
     if(dados.modo === "dark") document.body.classList.add("dark");
   }
 
@@ -396,13 +327,9 @@
       y += 10;
 
       const tabela = document.getElementById(id);
-      const headers = Array.from(tabela.tHead.rows[0].cells)
-        .slice(0, -1) // Ignorar coluna "Ações"
-        .map(cell => cell.innerText);
+      const headers = Array.from(tabela.tHead.rows[0].cells).slice(0, -1).map(cell => cell.innerText);
       const data = Array.from(tabela.tBodies[0].rows).map(row =>
-        Array.from(row.cells)
-          .slice(0, -1) // Ignorar coluna "Ações"
-          .map(cell => cell.innerText)
+        Array.from(row.cells).slice(0, -1).map(cell => cell.innerText)
       );
 
       doc.autoTable({
