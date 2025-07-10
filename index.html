@@ -1,358 +1,343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curso Técnico em Enfermagem</title>
-  <style>
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://d335luupugsy2.cloudfront.net/images/landing_page/1623590/AdobeStock_283306159_fundo.jpg') no-repeat center center fixed;
-      background-size: cover;
-      z-index: -1;
-      filter: blur(8px);
-      opacity: 0.6;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Hidratação - Cuidado Moderno</title>
+    
+    <!-- Tailwind CSS para um design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter para uma tipografia limpa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados para complementar o Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
-    body.dark::before {
-      filter: blur(8px) brightness(0.5);
-      opacity: 0.5;
-    }
+        /* Animação de entrada para os elementos */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
 
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: #000;
-      margin: 20px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estilo para os radio buttons customizados */
+        .option-label:has(input:checked) {
+            background-color: #ccfbf1; /* bg-teal-50 */
+            border-color: #14b8a6; /* border-teal-500 */
+            box-shadow: 0 0 0 2px #14b8a6;
+        }
 
-    h2 {
-      background-color: #006699;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
+        /* Animação para o card de resultado */
+        .result-card {
+            animation: scaleUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      background-color: rgba(255,255,255,0.92);
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    th, td {
-      font-size: 14px;
-      padding: 12px 15px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #e0e0e0;
-      font-weight: 600;
-    }
-
-    td[contenteditable] {
-      background-color: #fafafa;
-      cursor: text;
-      min-height: 30px;
-      border-radius: 4px;
-      outline: none;
-      transition: background-color 0.2s ease;
-    }
-
-    td[contenteditable]:focus {
-      background-color: #e8f0fe;
-      box-shadow: 0 0 5px #4285f4;
-    }
-
-    .media, .status {
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .status.aprovado {
-      color: green;
-    }
-
-    .status.reprovado {
-      color: red;
-    }
-
-    button {
-      background-color: #006699;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      margin: 6px 4px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #004d66;
-    }
-
-    .button-group {
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    body.dark {
-      color: #e0e0e0;
-    }
-
-    body.dark table {
-      background-color: rgba(30,30,30,0.9);
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
-    }
-
-    body.dark th {
-      background-color: #333;
-      color: #ddd;
-    }
-
-    body.dark td[contenteditable] {
-      background-color: #2a2a2a;
-      color: #ccc;
-    }
-
-    body.dark td[contenteditable]:focus {
-      background-color: #3a3a3a;
-      box-shadow: 0 0 8px #7193f4;
-    }
-
-    .acao-btn {
-      text-align: center;
-      min-width: 80px;
-    }
-  </style>
+        @keyframes scaleUp {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-teal-50 to-cyan-100 min-h-screen flex items-center justify-center p-4">
 
-<h2>📘 Disciplinas e Notas</h2>
-<table id="tabelaNotas">
-  <thead>
-    <tr>
-      <th>Disciplina</th>
-      <th>Professor(a)</th>
-      <th>Nota 1</th>
-      <th>Nota 2</th>
-      <th>Média Final</th>
-      <th>Faltas</th>
-      <th>Status</th>
-      <th>Observações</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<div class="button-group">
-  <button onclick="adicionarDisciplina()">Adicionar Disciplina</button>
-</div>
+    <div id="quiz-container" class="w-full max-w-2xl mx-auto transition-all duration-500">
+        <!-- Card Principal do Quiz -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-10 fade-in">
+            
+            <!-- Cabeçalho -->
+            <div id="quiz-header" class="text-center mb-8">
+                <img src="https://cdn-icons-png.flaticon.com/512/2907/2907353.png" alt="Ícone de gota d'água e saúde" class="mx-auto h-16 w-16 mb-4">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-600">
+                    Quiz de Hidratação
+                </h1>
+                <p class="text-gray-600 mt-2 font-medium">Nutrição e Cuidados de Enfermagem</p>
+                <p class="text-xs text-teal-800 font-semibold mt-2">Feito por Érica Barbosa - ENF-68M</p>
+            </div>
 
-<h2>📅 Organização da Próxima Matéria</h2>
-<table id="tabelaOrganizacao">
-  <thead>
-    <tr>
-      <th>Matéria</th>
-      <th>Data Planejada</th>
-      <th>Atividade</th>
-      <th>Observações</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<div class="button-group">
-  <button onclick="adicionarOrganizacao()">Adicionar Organização</button>
-</div>
+            <!-- Conteúdo do Quiz (Perguntas) -->
+            <div id="quiz-content">
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="question-counter" class="text-sm font-semibold text-teal-700"></span>
+                        <span id="progress-text" class="text-sm font-bold text-teal-600">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-gradient-to-r from-teal-400 to-cyan-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
 
-<div class="button-group">
-  <button onclick="salvarTudo()">💾 Salvar Dados</button>
-  <button onclick="alternarModoNoturno()">🌙 Alternar Modo Noturno</button>
-  <button onclick="limparTudo()">🧹 Limpar Tudo</button>
-  <button onclick="exportarPDF()">📄 Exportar tudo para PDF</button>
-</div>
+                <h2 id="question-title" class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center"></h2>
+                
+                <div id="options-container" class="space-y-4">
+                    <!-- As opções serão inseridas aqui pelo JavaScript -->
+                </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+                <div id="navigation-buttons" class="mt-8 flex justify-between items-center">
+                    <button id="prev-btn" onclick="prevQuestion()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-all duration-300 transform hover:scale-105">
+                        Voltar
+                    </button>
+                    <button id="next-btn" onclick="nextQuestion()" class="bg-teal-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-teal-600 transition-all duration-300 shadow-lg shadow-teal-500/30 transform hover:scale-105">
+                        Próximo
+                    </button>
+                </div>
+            </div>
 
-<script>
-  function atualizarLinhaNotas(row) {
-    const nota1 = parseFloat(row.cells[2].innerText.replace(',', '.')) || 0;
-    const nota2 = parseFloat(row.cells[3].innerText.replace(',', '.')) || 0;
-    const media = ((nota1 + nota2) / 2).toFixed(2);
-    row.cells[4].innerText = media.replace('.', ',');
+            <!-- Tela de Resultado -->
+            <div id="result-container" class="hidden text-center">
+                <!-- O resultado será inserido aqui -->
+            </div>
 
-    const statusCell = row.cells[6];
-    if(media >= 6) {
-      statusCell.innerText = "Aprovado";
-      statusCell.classList.add("aprovado");
-      statusCell.classList.remove("reprovado");
-    } else {
-      statusCell.innerText = "Reprovado";
-      statusCell.classList.add("reprovado");
-      statusCell.classList.remove("aprovado");
-    }
-  }
+        </div>
+        
+        <!-- Dica Fixa -->
+        <div class="mt-6 text-center text-teal-800/80 text-sm font-medium p-4 bg-teal-100/50 rounded-lg fade-in">
+            <p>💧 <strong>Dica da Enfermagem:</strong> A água é essencial para manter a temperatura do corpo, transportar nutrientes e eliminar toxinas.</p>
+        </div>
+    </div>
 
-  function criarBotaoApagar(row) {
-    const cell = row.insertCell(-1);
-    cell.className = "acao-btn";
+    <script>
+        // --- Estrutura de Dados do Quiz ---
+        const quizData = [
+            {
+                question: "Você sente sede frequentemente?",
+                options: ["Sim", "Não"],
+                score: [1, 0] // Pontuação para cada opção
+            },
+            {
+                question: "Sua urina está escura ou tem cheiro forte?",
+                options: ["Sim", "Não"],
+                score: [1, 0]
+            },
+            {
+                question: "Você teve dor de cabeça ou cansaço hoje?",
+                options: ["Sim", "Não"],
+                score: [1, 0]
+            },
+            {
+                question: "Seus lábios ou boca estão secos?",
+                options: ["Sim", "Não"],
+                score: [1, 0]
+            },
+            {
+                question: "Você bebe menos de 5 copos de água por dia?",
+                options: ["Sim", "Não"],
+                score: [1, 0]
+            }
+        ];
 
-    const btn = document.createElement("button");
-    btn.textContent = "Apagar";
-    btn.onclick = () => {
-      if(confirm("Deseja realmente apagar esta linha?")) {
-        row.remove();
-        salvarTudo();
-      }
-    };
-    cell.appendChild(btn);
-  }
+        // --- Variáveis de Estado ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
 
-  function adicionarDisciplina(conteudo = []) {
-    const tbody = document.querySelector("#tabelaNotas tbody");
-    const row = tbody.insertRow();
-    for(let i=0; i<8; i++) {
-      const cell = row.insertCell();
-      if(i === 4 || i === 6) {
-        if(i === 4) cell.className = "media";
-        if(i === 6) cell.className = "status";
-        cell.innerText = "";
-      } else {
-        cell.contentEditable = "true";
-        if(conteudo[i]) cell.innerText = conteudo[i];
-        if(i === 2 || i === 3) {
-          cell.oninput = () => {
-            atualizarLinhaNotas(row);
-            salvarTudo();
-          };
-        } else {
-          cell.oninput = salvarTudo;
+        // --- Referências de Elementos do DOM ---
+        const quizHeader = document.getElementById('quiz-header');
+        const quizContent = document.getElementById('quiz-content');
+        const resultContainer = document.getElementById('result-container');
+        const questionCounter = document.getElementById('question-counter');
+        const questionTitle = document.getElementById('question-title');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        // --- Funções do Quiz ---
+
+        /**
+         * Inicia o quiz renderizando a primeira pergunta.
+         */
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            quizHeader.classList.remove('hidden');
+            quizContent.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            renderQuestion();
         }
-      }
-    }
-    atualizarLinhaNotas(row);
-    criarBotaoApagar(row);
-    salvarTudo();
-  }
 
-  function adicionarOrganizacao(conteudo = []) {
-    const tbody = document.querySelector("#tabelaOrganizacao tbody");
-    const row = tbody.insertRow();
-    for(let i=0; i<4; i++) {
-      const cell = row.insertCell();
-      cell.contentEditable = "true";
-      if(conteudo[i]) cell.innerText = conteudo[i];
-      cell.oninput = salvarTudo;
-    }
-    criarBotaoApagar(row);
-    salvarTudo();
-  }
+        /**
+         * Renderiza a pergunta atual na tela.
+         */
+        function renderQuestion() {
+            // Adiciona animação de fade-in
+            quizContent.classList.remove('fade-in');
+            void quizContent.offsetWidth; // Truque para reiniciar a animação
+            quizContent.classList.add('fade-in');
 
-  function salvarTudo() {
-    function salvarTabela(id) {
-      const tbody = document.querySelector(`#${id} tbody`);
-      const linhas = Array.from(tbody.rows);
-      return linhas.map(row => {
-        const celulasTexto = Array.from(row.cells).slice(0, -1).map(cell => cell.innerText);
-        return celulasTexto;
-      });
-    }
-    const dados = {
-      notas: salvarTabela("tabelaNotas"),
-      organizacao: salvarTabela("tabelaOrganizacao"),
-      modo: document.body.classList.contains("dark") ? "dark" : "light"
-    };
-    localStorage.setItem("cursoEnfermagem", JSON.stringify(dados));
-  }
+            const question = quizData[currentQuestionIndex];
+            questionCounter.textContent = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+            questionTitle.textContent = question.question;
+            optionsContainer.innerHTML = '';
 
-  function carregarTudo() {
-    const dados = JSON.parse(localStorage.getItem("cursoEnfermagem"));
-    if(!dados) return;
-    dados.notas.forEach(linha => adicionarDisciplina(linha));
-    dados.organizacao.forEach(linha => adicionarOrganizacao(linha));
-    if(dados.modo === "dark") document.body.classList.add("dark");
-  }
-
-  function limparTudo() {
-    if(confirm("Deseja realmente apagar todas as informações salvas?")) {
-      localStorage.removeItem("cursoEnfermagem");
-      location.reload();
-    }
-  }
-
-  function alternarModoNoturno() {
-    document.body.classList.toggle("dark");
-    salvarTudo();
-  }
-
-  async function exportarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    if(!jsPDF.API.autoTable) {
-      await new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js";
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-
-    let y = 20;
-    const margemEsq = 15;
-
-    function adicionarTabelaPDF(titulo, id) {
-      doc.setFontSize(14);
-      doc.text(titulo, margemEsq, y);
-      y += 10;
-
-      const tabela = document.getElementById(id);
-      const headers = Array.from(tabela.tHead.rows[0].cells).slice(0, -1).map(cell => cell.innerText);
-      const data = Array.from(tabela.tBodies[0].rows).map(row =>
-        Array.from(row.cells).slice(0, -1).map(cell => cell.innerText)
-      );
-
-      doc.autoTable({
-        startY: y,
-        head: [headers],
-        body: data,
-        margin: { left: margemEsq, right: 15 },
-        styles: { fontSize: 9, cellPadding: 2, minCellHeight: 8 },
-        theme: 'striped',
-        didDrawPage: (data) => {
-          y = data.cursor.y + 10;
+            question.options.forEach((option, index) => {
+                const isChecked = userAnswers[currentQuestionIndex] === index;
+                optionsContainer.innerHTML += `
+                    <label class="option-label flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:border-teal-400 hover:bg-teal-50/50">
+                        <input type="radio" name="q${currentQuestionIndex}" value="${index}" class="hidden" ${isChecked ? 'checked' : ''} onchange="selectAnswer(${index})">
+                        <span class="flex-grow text-gray-700 font-medium">${option}</span>
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center transition-all duration-300 ${isChecked ? 'border-teal-500 bg-teal-500' : ''}">
+                            ${isChecked ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                        </div>
+                    </label>
+                `;
+            });
+            updateNavigation();
+            updateProgressBar();
         }
-      });
-    }
 
-    adicionarTabelaPDF("📘 Disciplinas e Notas", "tabelaNotas");
-    adicionarTabelaPDF("📅 Organização da Próxima Matéria", "tabelaOrganizacao");
+        /**
+         * Armazena a resposta selecionada pelo usuário.
+         * @param {number} answerIndex - O índice da resposta selecionada.
+         */
+        function selectAnswer(answerIndex) {
+            userAnswers[currentQuestionIndex] = answerIndex;
+            renderQuestion(); // Re-renderiza para mostrar a seleção
+        }
 
-    doc.save("CursoTecnicoEnfermagem.pdf");
-  }
+        /**
+         * Atualiza a visibilidade e o texto dos botões de navegação.
+         */
+        function updateNavigation() {
+            prevBtn.style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextBtn.textContent = 'Ver Resultado';
+            } else {
+                nextBtn.textContent = 'Próximo';
+            }
+        }
+        
+        /**
+         * Atualiza a barra de progresso.
+         */
+        function updateProgressBar() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / quizData.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${Math.round(percentage)}%`;
+        }
 
-  carregarTudo();
-</script>
+        /**
+         * Navega para a próxima pergunta ou mostra o resultado.
+         */
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                // Alerta sutil se nenhuma resposta for selecionada
+                const qTitle = document.getElementById('question-title');
+                qTitle.classList.add('text-red-500');
+                setTimeout(() => qTitle.classList.remove('text-red-500'), 500);
+                return;
+            }
 
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        /**
+         * Navega para a pergunta anterior.
+         */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        /**
+         * Calcula a pontuação e exibe o card de resultado final.
+         */
+        function showResult() {
+            let totalScore = 0;
+            userAnswers.forEach((answerIndex, questionIndex) => {
+                if(answerIndex !== null) {
+                    totalScore += quizData[questionIndex].score[answerIndex];
+                }
+            });
+
+            let result = {};
+            if (totalScore >= 4) {
+                result = {
+                    title: "Sinais Fortes de Desidratação!",
+                    message: "Seu corpo está pedindo socorro. Beba água imediatamente e considere procurar orientação profissional para ajustar seus hábitos.",
+                    icon: '🚨',
+                    color: 'red',
+                    award: '🧃 Você ganhou um copo de suco!'
+                };
+            } else if (totalScore >= 2) {
+                result = {
+                    title: "Atenção aos Sinais!",
+                    message: "Você pode estar com desidratação leve. Aumente a ingestão de líquidos ao longo do dia para melhorar sua energia e bem-estar.",
+                    icon: '⚠️',
+                    color: 'yellow',
+                    award: '🧃 Você ganhou um garrafa de água!'
+                };
+            } else {
+                result = {
+                    title: "Parabéns! Hidratação em Dia!",
+                    message: "Excelente! Você parece estar cuidando muito bem da sua hidratação. Continue com os bons hábitos para manter a saúde.",
+                    icon: '✅',
+                    color: 'green',
+                    award: '🎁 Você ganhou um brinde!'
+                };
+            }
+            
+            const colors = {
+                red: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-500', button: 'bg-red-500 hover:bg-red-600' },
+                yellow: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-500', button: 'bg-yellow-500 hover:bg-yellow-600' },
+                green: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-500', button: 'bg-green-500 hover:bg-green-600' }
+            };
+            const theme = colors[result.color];
+
+            quizContent.classList.add('hidden');
+            quizHeader.classList.add('hidden');
+            resultContainer.innerHTML = `
+                <div class="result-card p-8 rounded-2xl ${theme.bg} border-2 ${theme.border}">
+                    <div class="text-6xl mb-4">${result.icon}</div>
+                    <h2 class="text-2xl font-bold ${theme.text}">${result.title}</h2>
+                    <p class="mt-2 ${theme.text}">${result.message}</p>
+                    ${result.award ? `<p class="mt-4 font-semibold ${theme.text}">${result.award}</p>` : ''}
+                    
+                    <div class="mt-8 space-y-4 sm:space-y-0 sm:flex sm:justify-center sm:space-x-4">
+                        <button onclick="startQuiz()" class="${theme.button} text-white font-bold py-3 px-6 rounded-lg w-full sm:w-auto transition-transform transform hover:scale-105">
+                            Refazer Quiz
+                        </button>
+                        <a href="https://wa.me/?text=${encodeURIComponent(`Fiz o Quiz de Hidratação e meu resultado foi: '${result.title}'. Cuide-se também!`)}" target="_blank" class="bg-gray-700 text-white font-bold py-3 px-6 rounded-lg w-full sm:w-auto transition-transform transform hover:scale-105 hover:bg-gray-800 flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.003 2.011.564 3.996 1.59 5.731l-1.011 3.697 3.824-1.004z"></path></svg>
+                            Compartilhar
+                        </a>
+                    </div>
+                </div>
+            `;
+            resultContainer.classList.remove('hidden');
+        }
+
+        // --- Inicialização ---
+        // Inicia o quiz quando a página carrega.
+        document.addEventListener('DOMContentLoaded', startQuiz);
+    </script>
 </body>
 </html>
