@@ -3,341 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Hidratação - Cuidado Moderno</title>
-    
-    <!-- Tailwind CSS para um design moderno e responsivo -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter para uma tipografia limpa -->
+    <title>Batalha Bacteriológica: Penicilina | ENF-68M</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos personalizados para complementar o Tailwind */
+        :root {
+            --bg-color: #0a192f;
+            --primary-text-color: #ccd6f6;
+            --bio-green: #64ffda;
+            --bio-blue: #3a86ff;
+            --bio-red-alert: #ff4d6d;
+            --container-bg: #112240;
+            --disabled-color: #8892b0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text-color);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        /* Animação de entrada para os elementos */
-        .fade-in {
-            animation: fadeIn 0.6s ease-in-out;
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--bio-green);
+            text-shadow: 0 0 5px var(--bio-green), 0 0 10px rgba(100, 255, 218, 0.5);
+            margin-bottom: 20px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .game-container {
+            background-color: var(--container-bg);
+            border: 1px solid var(--bio-green);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.1);
+        }
+
+        #clue-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            font-weight: 400;
+            color: var(--primary-text-color);
+        }
+
+        #attempts-container {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--bio-green);
+            font-weight: bold;
         }
         
-        /* Estilo para os radio buttons customizados */
-        .option-label:has(input:checked) {
-            background-color: #ccfbf1; /* bg-teal-50 */
-            border-color: #14b8a6; /* border-teal-500 */
-            box-shadow: 0 0 0 2px #14b8a6;
+        #attempts-container span {
+            font-size: 1.8rem;
+            letter-spacing: 5px;
+            vertical-align: middle;
         }
 
-        /* Animação para o card de resultado */
-        .result-card {
-            animation: scaleUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        #word-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
-        @keyframes scaleUp {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .letter-box {
+            width: 40px;
+            height: 50px;
+            border-bottom: 4px solid var(--bio-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-text-color);
+            text-transform: uppercase;
+        }
+
+        .letter-box.space {
+            border: none;
+        }
+
+        #keyboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .key {
+            aspect-ratio: 1 / 1;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: var(--container-bg);
+            color: var(--primary-text-color);
+            border: 2px solid var(--bio-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .key:not(:disabled):hover {
+            background-color: var(--bio-green);
+            color: var(--bg-color);
+            border-color: var(--bio-green);
+        }
+
+        .key:disabled {
+            background-color: #1c2e4c;
+            color: var(--disabled-color);
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #303C55;
+        }
+
+        /* Modal de Feedback */
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--bio-green);
+            text-align: center;
+            box-shadow: 0 0 25px rgba(100, 255, 218, 0.3);
+        }
+        
+        #modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+        }
+        
+        #next-btn {
+            background: var(--bio-green);
+            color: var(--bg-color);
+            font-weight: bold;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        #next-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--disabled-color);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 to-cyan-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div id="quiz-container" class="w-full max-w-2xl mx-auto transition-all duration-500">
-        <!-- Card Principal do Quiz -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-10 fade-in">
-            
-            <!-- Cabeçalho -->
-            <div id="quiz-header" class="text-center mb-8">
-                <img src="https://cdn-icons-png.flaticon.com/512/2907/2907353.png" alt="Ícone de gota d'água e saúde" class="mx-auto h-16 w-16 mb-4">
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-600">
-                    Quiz de Hidratação
-                </h1>
-                <p class="text-gray-600 mt-2 font-medium">Nutrição e Cuidados de Enfermagem</p>
-                <p class="text-xs text-teal-800 font-semibold mt-2">Feito por Érica Barbosa - ENF-68M</p>
-            </div>
+    <h1 class="game-title">🦠 Batalha Bacteriológica 🦠</h1>
+    
+    <div class="game-container">
+        <div id="attempts-container"></div>
+        <p id="clue-text">Carregando dica...</p>
+        <div id="word-display"></div>
+        <div id="keyboard-container"></div>
+    </div>
 
-            <!-- Conteúdo do Quiz (Perguntas) -->
-            <div id="quiz-content">
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <span id="question-counter" class="text-sm font-semibold text-teal-700"></span>
-                        <span id="progress-text" class="text-sm font-bold text-teal-600">0%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div id="progress-bar" class="bg-gradient-to-r from-teal-400 to-cyan-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <h2 id="question-title" class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center"></h2>
-                
-                <div id="options-container" class="space-y-4">
-                    <!-- As opções serão inseridas aqui pelo JavaScript -->
-                </div>
-
-                <div id="navigation-buttons" class="mt-8 flex justify-between items-center">
-                    <button id="prev-btn" onclick="prevQuestion()" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition-all duration-300 transform hover:scale-105">
-                        Voltar
-                    </button>
-                    <button id="next-btn" onclick="nextQuestion()" class="bg-teal-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-teal-600 transition-all duration-300 shadow-lg shadow-teal-500/30 transform hover:scale-105">
-                        Próximo
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tela de Resultado -->
-            <div id="result-container" class="hidden text-center">
-                <!-- O resultado será inserido aqui -->
-            </div>
-
-        </div>
-        
-        <!-- Dica Fixa -->
-        <div class="mt-6 text-center text-teal-800/80 text-sm font-medium p-4 bg-teal-100/50 rounded-lg fade-in">
-            <p>💧 <strong>Dica da Enfermagem:</strong> A água é essencial para manter a temperatura do corpo, transportar nutrientes e eliminar toxinas.</p>
+    <div id="modal">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <p id="modal-text"></p>
+            <button id="next-btn">Continuar</button>
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2025 | Um desafio biológico de <strong>ENF-68M</strong></p>
+    </footer>
+
     <script>
-        // --- Estrutura de Dados do Quiz ---
-        const quizData = [
-            {
-                question: "Você sente sede frequentemente?",
-                options: ["Sim", "Não"],
-                score: [1, 0] // Pontuação para cada opção
-            },
-            {
-                question: "Sua urina está escura ou tem cheiro forte?",
-                options: ["Sim", "Não"],
-                score: [1, 0]
-            },
-            {
-                question: "Você teve dor de cabeça ou cansaço hoje?",
-                options: ["Sim", "Não"],
-                score: [1, 0]
-            },
-            {
-                question: "Seus lábios ou boca estão secos?",
-                options: ["Sim", "Não"],
-                score: [1, 0]
-            },
-            {
-                question: "Você bebe menos de 5 copos de água por dia?",
-                options: ["Sim", "Não"],
-                score: [1, 0]
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+        const questions = [
+            { clue: "Quem descobriu a penicilina?", answer: "Alexander Fleming" },
+            { clue: "Em que ano a penicilina foi descoberta?", answer: "1928" },
+            { clue: "A penicilina é eficaz contra qual tipo de micro-organismo?", answer: "Bactérias" },
+            { clue: "A penicilina pertence a qual classe de medicamentos?", answer: "Antibióticos" }
         ];
-
-        // --- Variáveis de Estado ---
+        
+        const MAX_ATTEMPTS = 6;
+        let attemptsLeft;
         let currentQuestionIndex = 0;
-        let userAnswers = new Array(quizData.length).fill(null);
+        let secretWord = '';
+        let guessedLetters = [];
 
-        // --- Referências de Elementos do DOM ---
-        const quizHeader = document.getElementById('quiz-header');
-        const quizContent = document.getElementById('quiz-content');
-        const resultContainer = document.getElementById('result-container');
-        const questionCounter = document.getElementById('question-counter');
-        const questionTitle = document.getElementById('question-title');
-        const optionsContainer = document.getElementById('options-container');
-        const prevBtn = document.getElementById('prev-btn');
+        // DOM Elements
+        const attemptsContainer = document.getElementById('attempts-container');
+        const clueText = document.getElementById('clue-text');
+        const wordDisplay = document.getElementById('word-display');
+        const keyboardContainer = document.getElementById('keyboard-container');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
         const nextBtn = document.getElementById('next-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
 
-        // --- Funções do Quiz ---
-
-        /**
-         * Inicia o quiz renderizando a primeira pergunta.
-         */
-        function startQuiz() {
-            currentQuestionIndex = 0;
-            userAnswers.fill(null);
-            quizHeader.classList.remove('hidden');
-            quizContent.classList.remove('hidden');
-            resultContainer.classList.add('hidden');
-            renderQuestion();
+        function normalizeString(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
         }
 
-        /**
-         * Renderiza a pergunta atual na tela.
-         */
-        function renderQuestion() {
-            // Adiciona animação de fade-in
-            quizContent.classList.remove('fade-in');
-            void quizContent.offsetWidth; // Truque para reiniciar a animação
-            quizContent.classList.add('fade-in');
-
-            const question = quizData[currentQuestionIndex];
-            questionCounter.textContent = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
-            questionTitle.textContent = question.question;
-            optionsContainer.innerHTML = '';
-
-            question.options.forEach((option, index) => {
-                const isChecked = userAnswers[currentQuestionIndex] === index;
-                optionsContainer.innerHTML += `
-                    <label class="option-label flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:border-teal-400 hover:bg-teal-50/50">
-                        <input type="radio" name="q${currentQuestionIndex}" value="${index}" class="hidden" ${isChecked ? 'checked' : ''} onchange="selectAnswer(${index})">
-                        <span class="flex-grow text-gray-700 font-medium">${option}</span>
-                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center transition-all duration-300 ${isChecked ? 'border-teal-500 bg-teal-500' : ''}">
-                            ${isChecked ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                        </div>
-                    </label>
-                `;
-            });
-            updateNavigation();
-            updateProgressBar();
-        }
-
-        /**
-         * Armazena a resposta selecionada pelo usuário.
-         * @param {number} answerIndex - O índice da resposta selecionada.
-         */
-        function selectAnswer(answerIndex) {
-            userAnswers[currentQuestionIndex] = answerIndex;
-            renderQuestion(); // Re-renderiza para mostrar a seleção
-        }
-
-        /**
-         * Atualiza a visibilidade e o texto dos botões de navegação.
-         */
-        function updateNavigation() {
-            prevBtn.style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
-            if (currentQuestionIndex === quizData.length - 1) {
-                nextBtn.textContent = 'Ver Resultado';
-            } else {
-                nextBtn.textContent = 'Próximo';
+        function createKeyboard() {
+            keyboardContainer.innerHTML = '';
+            const keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            for (const key of keys) {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.classList.add('key');
+                button.addEventListener('click', () => handleGuess(key));
+                keyboardContainer.appendChild(button);
             }
         }
-        
-        /**
-         * Atualiza a barra de progresso.
-         */
-        function updateProgressBar() {
-            const answeredCount = userAnswers.filter(answer => answer !== null).length;
-            const percentage = (answeredCount / quizData.length) * 100;
-            progressBar.style.width = `${percentage}%`;
-            progressText.textContent = `${Math.round(percentage)}%`;
-        }
 
-        /**
-         * Navega para a próxima pergunta ou mostra o resultado.
-         */
-        function nextQuestion() {
-            if (userAnswers[currentQuestionIndex] === null) {
-                // Alerta sutil se nenhuma resposta for selecionada
-                const qTitle = document.getElementById('question-title');
-                qTitle.classList.add('text-red-500');
-                setTimeout(() => qTitle.classList.remove('text-red-500'), 500);
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showFinalResult();
                 return;
             }
 
-            if (currentQuestionIndex < quizData.length - 1) {
-                currentQuestionIndex++;
-                renderQuestion();
+            attemptsLeft = MAX_ATTEMPTS;
+            guessedLetters = [];
+            const currentQuestion = questions[currentQuestionIndex];
+            secretWord = normalizeString(currentQuestion.answer);
+            
+            clueText.textContent = currentQuestion.clue;
+            
+            updateAttemptsDisplay();
+            updateWordDisplay();
+            resetKeyboard();
+        }
+
+        function updateWordDisplay() {
+            wordDisplay.innerHTML = '';
+            let allLettersGuessed = true;
+            for (const char of secretWord) {
+                const box = document.createElement('div');
+                box.classList.add('letter-box');
+                if (char === ' ') {
+                    box.classList.add('space');
+                } else if (guessedLetters.includes(char)) {
+                    box.textContent = char;
+                } else {
+                    box.textContent = '';
+                    allLettersGuessed = false;
+                }
+                wordDisplay.appendChild(box);
+            }
+            if (allLettersGuessed) checkGameState();
+        }
+
+        function updateAttemptsDisplay() {
+            attemptsContainer.innerHTML = `Tentativas: <span>${'🦠'.repeat(attemptsLeft)}</span>`;
+        }
+        
+        function handleGuess(letter) {
+            const normalizedLetter = normalizeString(letter);
+            if (guessedLetters.includes(normalizedLetter)) return;
+
+            disableKey(letter);
+            guessedLetters.push(normalizedLetter);
+
+            if (secretWord.includes(normalizedLetter)) {
+                updateWordDisplay();
             } else {
-                showResult();
+                attemptsLeft--;
+                updateAttemptsDisplay();
             }
+            checkGameState();
         }
-
-        /**
-         * Navega para a pergunta anterior.
-         */
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion();
-            }
-        }
-
-        /**
-         * Calcula a pontuação e exibe o card de resultado final.
-         */
-        function showResult() {
-            let totalScore = 0;
-            userAnswers.forEach((answerIndex, questionIndex) => {
-                if(answerIndex !== null) {
-                    totalScore += quizData[questionIndex].score[answerIndex];
+        
+        function disableKey(key) {
+             Array.from(keyboardContainer.children).forEach(button => {
+                if (button.textContent === key) {
+                    button.disabled = true;
                 }
             });
-
-            let result = {};
-            if (totalScore >= 4) {
-                result = {
-                    title: "Sinais Fortes de Desidratação!",
-                    message: "Seu corpo está pedindo socorro. Beba água imediatamente e considere procurar orientação profissional para ajustar seus hábitos.",
-                    icon: '🚨',
-                    color: 'red',
-                    award: '🧃 Você ganhou um copo de suco!'
-                };
-            } else if (totalScore >= 2) {
-                result = {
-                    title: "Atenção aos Sinais!",
-                    message: "Você pode estar com desidratação leve. Aumente a ingestão de líquidos ao longo do dia para melhorar sua energia e bem-estar.",
-                    icon: '⚠️',
-                    color: 'yellow',
-                    award: '🧃 Você ganhou um garrafa de água!'
-                };
-            } else {
-                result = {
-                    title: "Parabéns! Hidratação em Dia!",
-                    message: "Excelente! Você parece estar cuidando muito bem da sua hidratação. Continue com os bons hábitos para manter a saúde.",
-                    icon: '✅',
-                    color: 'green',
-                    award: '🎁 Você ganhou um brinde!'
-                };
-            }
-            
-            const colors = {
-                red: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-500', button: 'bg-red-500 hover:bg-red-600' },
-                yellow: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-500', button: 'bg-yellow-500 hover:bg-yellow-600' },
-                green: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-500', button: 'bg-green-500 hover:bg-green-600' }
-            };
-            const theme = colors[result.color];
-
-            quizContent.classList.add('hidden');
-            quizHeader.classList.add('hidden');
-            resultContainer.innerHTML = `
-                <div class="result-card p-8 rounded-2xl ${theme.bg} border-2 ${theme.border}">
-                    <div class="text-6xl mb-4">${result.icon}</div>
-                    <h2 class="text-2xl font-bold ${theme.text}">${result.title}</h2>
-                    <p class="mt-2 ${theme.text}">${result.message}</p>
-                    ${result.award ? `<p class="mt-4 font-semibold ${theme.text}">${result.award}</p>` : ''}
-                    
-                    <div class="mt-8 space-y-4 sm:space-y-0 sm:flex sm:justify-center sm:space-x-4">
-                        <button onclick="startQuiz()" class="${theme.button} text-white font-bold py-3 px-6 rounded-lg w-full sm:w-auto transition-transform transform hover:scale-105">
-                            Refazer Quiz
-                        </button>
-                        <a href="https://wa.me/?text=${encodeURIComponent(`Fiz o Quiz de Hidratação e meu resultado foi: '${result.title}'. Cuide-se também!`)}" target="_blank" class="bg-gray-700 text-white font-bold py-3 px-6 rounded-lg w-full sm:w-auto transition-transform transform hover:scale-105 hover:bg-gray-800 flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.003 2.011.564 3.996 1.59 5.731l-1.011 3.697 3.824-1.004z"></path></svg>
-                            Compartilhar
-                        </a>
-                    </div>
-                </div>
-            `;
-            resultContainer.classList.remove('hidden');
+        }
+        
+        function resetKeyboard() {
+            Array.from(keyboardContainer.children).forEach(button => {
+                button.disabled = false;
+            });
         }
 
-        // --- Inicialização ---
-        // Inicia o quiz quando a página carrega.
-        document.addEventListener('DOMContentLoaded', startQuiz);
+        function checkGameState() {
+            const isWon = secretWord.split('').every(char => guessedLetters.includes(char) || char === ' ');
+            const isLost = attemptsLeft <= 0;
+
+            if (isWon || isLost) {
+                setTimeout(() => showModal(isWon), 500);
+            }
+        }
+        
+        function showModal(isWon) {
+            if (isWon) {
+                modalTitle.textContent = "Ameaça Neutralizada!";
+                modalTitle.style.color = 'var(--bio-green)';
+                modalText.textContent = `Você acertou! A resposta era "${questions[currentQuestionIndex].answer}".`;
+            } else {
+                modalTitle.textContent = "Contaminação Total!";
+                modalTitle.style.color = 'var(--bio-red-alert)';
+                modalText.textContent = `As bactérias venceram. A resposta era "${questions[currentQuestionIndex].answer}".`;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function showFinalResult() {
+            clueText.textContent = "Você completou o Desafio Bacteriológico!";
+            wordDisplay.innerHTML = '';
+            keyboardContainer.innerHTML = '';
+            attemptsContainer.innerHTML = '🔬';
+            attemptsContainer.style.fontSize = '4rem';
+
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            modal.style.display = 'none';
+            loadQuestion();
+        });
+
+        // Start Game
+        createKeyboard();
+        loadQuestion();
+    });
     </script>
 </body>
 </html>
